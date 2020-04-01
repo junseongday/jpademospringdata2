@@ -1,10 +1,12 @@
 package com.js.jpademospringdata2.post;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Post {
+public class Post extends AbstractAggregateRoot {
     @Id @GeneratedValue
     private Long id;
 
@@ -46,5 +48,10 @@ public class Post {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Post publish() {
+        this.registerEvent(new PostPublishedEvent(this));
+        return this;
     }
 }
