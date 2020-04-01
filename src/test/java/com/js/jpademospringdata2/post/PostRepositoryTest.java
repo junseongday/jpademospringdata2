@@ -1,5 +1,6 @@
 package com.js.jpademospringdata2.post;
 
+import com.querydsl.core.types.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,28 +27,14 @@ public class PostRepositoryTest {
     ApplicationContext context;
 
     @Test
-    public void event() {
-        Post post = new Post();
-        post.setTitle(("evnet"));
-        PostPublishedEvent event = new PostPublishedEvent(post);
-
-        context.publishEvent(event);
-    }
-
-    @Before
-    public void setUp() {
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@");
-    }
-
-    @Test
     public void crud() {
         Post post = new Post();
         post.setTitle("hibernare");
-        assertThat(postRepository.contains(post)).isFalse();
         postRepository.save(post.publish());
-//        postRepository.findMyPost();
-        assertThat(postRepository.contains(post)).isTrue();
-        postRepository.delete(post);
-        postRepository.flush();
+
+        Predicate predicate = QPost.post.title.containsIgnoreCase("hi");
+        Optional<Post> one = postRepository.findOne(predicate);
+        assertThat(one).isNotEmpty();
+
     }
 }
